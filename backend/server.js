@@ -1,34 +1,33 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 5000; // ✅ Use environment port when deployed
+const PORT = process.env.PORT || 5000;
 
+// Enable JSON body parsing
 app.use(cors());
 app.use(express.json());
 
-// ✅ Root route (optional, for checking Render deployment)
-app.get("/", (req, res) => {
-  res.send("Backend is running successfully 🚀");
-});
+// For ES Modules __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// ✅ POST endpoint
+// POST endpoint
 app.post("/submit-date", (req, res) => {
-  try {
-    const { date } = req.body;
+  const { date } = req.body;
+  if (!date) return res.status(400).json({ message: "Date is required" });
 
-    if (!date) {
-      return res.status(400).json({ message: "Date is required" });
-    }
-
-    console.log("📅 Received date:", date);
-    return res.json({ message: `Date ${date} received successfully` });
-  } catch (err) {
-    console.error("❌ Server error:", err);
-    return res.status(500).json({ message: "Server error" });
-  }
+  console.log("Received date:", date); // This logs on backend
+  return res.json({ message: `Date ${date} received successfully` });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+// Serve frontend (after building React)
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

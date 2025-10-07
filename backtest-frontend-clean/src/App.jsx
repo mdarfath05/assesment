@@ -8,16 +8,11 @@ function App() {
     if (!date) return alert("Please select a date");
 
     try {
-      // ✅ Change starts here
-        const API_URL = import.meta.env.VITE_BACKEND_URL;
-
-const res = await fetch(`${API_URL}/submit-date`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ date }),
-});
-
-
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/submit-date`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date }),
+      });
       const data = await res.json();
       setResponse(data.message);
     } catch (err) {
