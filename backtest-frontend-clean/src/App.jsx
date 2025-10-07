@@ -8,7 +8,7 @@ function App() {
     if (!date) return alert("Please select a date");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/submit-date`, {
+      const res = await fetch("https://assesment-2-qgsy.onrender.com/submit-date", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date }),
